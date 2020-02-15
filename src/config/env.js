@@ -11,7 +11,9 @@ let routerMode = 'hash'
 let baseImgPath
 
 if (process.env.NODE_ENV === 'development') {
-  baseUrl = ''
+  // 由于本地没有启动至今调官方网站
+  // baseUrl = ''
+  baseUrl = '//elm.cangdu.org'
   baseImgPath = '/img/'
 } else {
   baseUrl = '//elm.cangdu.org'

@@ -1,6 +1,7 @@
 import { baseUrl } from './env'
 
 export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
+  debugger
   console.log(url, data, type, method)
   type = type.toUpperCase()
   url = baseUrl + url
@@ -17,7 +18,7 @@ export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
     }
   }
 
-  if (window.fetch && method == 'fetch') {
+  if (window.fetch && method === 'fetch') {
     let requestConfig = {
       credentials: 'include',
       method: type,
