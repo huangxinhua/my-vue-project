@@ -13,7 +13,7 @@
             <el-input v-model="loginForm.password" type="password" placeholder="密码"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="submit_btn">Login</el-button>
+            <el-button type="primary" class="submit_btn" @click="submitForm('loginForm')">Login</el-button>
           </el-form-item>
         </el-form>
         <p class="tip">温馨提示：</p>
@@ -24,6 +24,7 @@
   </div>
 </template>
 <script>
+import { login } from '@/api/getData'
 export default {
   data () {
     return {
@@ -50,7 +51,26 @@ export default {
 
   },
   methods: {
-
+    async submitForm (formName) {
+      // 校验 $refs组件的实例
+      this.$refs[formName].validate(
+        async (valid) => {
+          if (valid) {
+            console.log(' valid:', valid)
+            const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
+            console.log(' result:', result)
+          } else {
+            console.log(' pwd:', valid)
+            // 通知
+            this.$notify.error({
+              title: 'error',
+              message: '请输入正确的用户名密码',
+              offset: 100
+            })
+          }
+        }
+      )
+    }
   }
 }
 </script>
