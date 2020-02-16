@@ -59,6 +59,19 @@ export default {
             console.log(' valid:', valid)
             const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
             console.log(' result:', result)
+            if (result.status === 1) {
+              this.$message({
+                type: 'success',
+                message: 'login successful'
+              })
+              // 转向管理页面
+              this.$router.push('manager')
+            } else {
+              this.$message({
+                type: 'error',
+                message: result.message
+              })
+            }
           } else {
             console.log(' pwd:', valid)
             // 通知
@@ -67,6 +80,7 @@ export default {
               message: '请输入正确的用户名密码',
               offset: 100
             })
+            return false
           }
         }
       )
