@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import studyTest from './modules/studyTest'
+
 import HelloWorld from '@/components/HelloWorld'
 import Button from '@/components/elem/Button.vue'
 import Login from '@/components/page/Login.vue'
@@ -7,6 +9,13 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    // 引入方式的router
+    studyTest,
+    {
+      path: '/',
+      name: 'first',
+      component: HelloWorld
+    },
     {
       path: '/helloword',
       name: 'HelloWorld',
@@ -16,7 +25,7 @@ export default new Router({
       name: 'Button',
       component: Button
     }, {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login
     }, {

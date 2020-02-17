@@ -12,6 +12,11 @@ export const mixinsTest = {
 }
 
 export const mixinsTest2 = {
+  data () {
+    return {
+      testProps: 'test'
+    }
+  },
   methods: {
     hello2 () {
       console.log('hello2')
