@@ -11,6 +11,8 @@
         <el-dropdown-item command="signout">退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+    <div><span @click="changeLaguages()">切换语言</span>
+      <span>{{ $t('lang.test')}}</span></div>
   </div>
 </template>
 <script>
@@ -19,7 +21,8 @@ import { baseImgPath } from '@/config/env'
 export default {
   data () {
     return {
-      baseImgPath
+      baseImgPath,
+      lang: 'zh'
     }
   },
   methods: {
@@ -42,6 +45,11 @@ export default {
           })
         }
       }
+    },
+    changeLaguages () {
+      console.log(this.$i18n.locale)
+      let lang = this.$i18n.locale === 'zh' ? 'en' : 'zh'
+      this.$i18n.locale = lang
     }
   }
 }
