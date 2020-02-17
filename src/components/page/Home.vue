@@ -19,20 +19,24 @@
           <div class="data_list all_head"><span class="data_num head">总数据：</span></div>
         </el-col>
         <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{userCount}}</span>注册用户$t("name")</div>
+          <div class="data_list"><span class="data_num">{{userCount}}</span>注册用户</div>
         </el-col>
         <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{userCount}}</span>订单</div>
+          <div class="data_list"><span class="data_num">{{orderCount}}</span>订单</div>
         </el-col>
       </el-row>
     </section>
+    <tendency :sevenDate='sevenDate' :sevenDay='sevenDay'></tendency>
   </div>
 </template>
 <script>
 import headTop from '../HeadTop.vue'
+import tendency from '@/components/Tendency.vue'
+import dtime from 'time-formater'
 export default {
   components: {
-    headTop
+    headTop,
+    tendency
   },
   data () {
     return {
@@ -70,13 +74,3 @@ export default {
   }
 }
 </style>
-<i18n>
-{
-  en:{
-name:"dd"
-  }
-  zh:{
-name:"zh"
-  }
-}
-</i18n>
