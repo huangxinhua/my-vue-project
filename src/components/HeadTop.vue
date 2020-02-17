@@ -22,7 +22,7 @@ export default {
   data () {
     return {
       baseImgPath,
-      lang: 'zh'
+      lang: 'zh-CN'
     }
   },
   methods: {
@@ -48,8 +48,23 @@ export default {
     },
     changeLaguages () {
       console.log(this.$i18n.locale)
-      let lang = this.$i18n.locale === 'zh' ? 'en' : 'zh'
-      this.$i18n.locale = lang
+      this.$confirm('确定切换语言吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.lang === 'zh-CN') {
+          this.lang = 'en-US'
+          this.$i18n.locale = this.lang// 关键语句
+        } else {
+          this.lang = 'zh-CN'
+          this.$i18n.locale = this.lang// 关键语句
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info'
+        })
+      })
     }
   }
 }

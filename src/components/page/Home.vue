@@ -19,7 +19,7 @@
           <div class="data_list all_head"><span class="data_num head">总数据：</span></div>
         </el-col>
         <el-col :span="4">
-          <div class="data_list"><span class="data_num">{{userCount}}</span>注册用户</div>
+          <div class="data_list"><span class="data_num">{{userCount}}</span>注册用户$t("name")</div>
         </el-col>
         <el-col :span="4">
           <div class="data_list"><span class="data_num">{{userCount}}</span>订单</div>
@@ -70,3 +70,13 @@ export default {
   }
 }
 </style>
+<i18n>
+{
+  en:{
+name:"dd"
+  }
+  zh:{
+name:"zh"
+  }
+}
+</i18n>
