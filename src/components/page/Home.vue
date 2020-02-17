@@ -33,6 +33,7 @@
 import headTop from '../HeadTop.vue'
 import tendency from '@/components/Tendency.vue'
 import dtime from 'time-formater'
+import { userCount, orderCount, getUserCount, getOrderCount, adminDayCount, adminCount } from '@/api/getData'
 export default {
   components: {
     headTop,
@@ -40,34 +41,51 @@ export default {
   },
   data () {
     return {
-      userCount: 10,
-      orderCount: 20,
-      adminCount: 30,
-      allUserCount: 40,
-      allOrderCount: 60,
-      allAdminCount: 70,
+      userCount: null,
+      orderCount: null,
+      adminCount: null,
+      allUserCount: null,
+      allOrderCount: null,
+      allAdminCount: null,
       sevenDay: [],
       sevenDate: [[], [], []]
+      // sevenDay: ['2020-02-10', '2020-02-11', '2020-02-12', '2020-02-13', '2020-02-14', '2020-02-15', '2020-02-16', '2020-02-17'],
+      // sevenDate: [[24, 15, 4, 12, 15, 19, 29], [27, 15, 20, 125, 35, 17, 29], [14, 15, 80, 12, 35, 19, 29]]
     }
   },
   computed: {
 
   },
   mounted () {
+    this.initData()
     for (let i = 6; i > -1; i--) {
       const date = dtime(new Date().getTime() - 86400000 * i).format('YYYY-MM-DD')
       this.sevenDay.push(date)
-      this.getSevenData()
     }
-    this.sevenDate = [11, 22, 33]
+    this.getSevenData()
   },
   methods: {
+    async initData () {
+      const today = dtime().format('YYYY-MM-DD')
+      Promise.all([userCount(today), orderCount(today), adminDayCount(today), getUserCount(), getOrderCount(), adminCount()])
+        .then(res => {
+          this.userCount = res[0].count
+          this.orderCount = res[1].count
+          this.adminCount = res[2].count
+          this.allUserCount = res[3].count
+          this.allOrderCount = res[4].count
+          this.allAdminCount = res[5].count
+        }).catch(err => {
+          console.log(err)
+        })
+    },
+
     async getSevenData () {
       const apiArr = [[], [], []]
       this.sevenDay.forEach(item => {
-        apiArr[0].push(1000)
-        apiArr[1].push(200)
-        apiArr[2].push(123123)
+        apiArr[0].push(userCount(item))
+        apiArr[1].push(orderCount(item))
+        apiArr[2].push(adminDayCount(item))
       })
       const promiseArr = [...apiArr[0], ...apiArr[1], ...apiArr[2]]
       Promise.all(promiseArr).then(res => {
