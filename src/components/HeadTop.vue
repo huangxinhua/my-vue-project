@@ -5,13 +5,14 @@
       <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
     </el-breadcrumb>
     <el-dropdown @command="handleCommand" menu-align='start'>
-      <img :src="baseImgPath" class="avator">
+      <i class="el-icon-user-solid"></i>
+      <!-- <img :src="baseImgPath" class="avator"> -->
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="home">首页</el-dropdown-item>
         <el-dropdown-item command="signout">退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
-    <div><span @click="changeLaguages()">切换语言</span>
+    <div class="language"><span @click="changeLaguages()">切换语言</span>
       <span>{{ $t('lang.test')}}</span></div>
   </div>
 </template>
@@ -78,6 +79,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding-left: 20px;
+  language {
+    width: 10px;
+  }
 }
 .el-dropdown-menu__item {
   text-align: center;
