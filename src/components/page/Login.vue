@@ -25,6 +25,7 @@
 </template>
 <script>
 import { login } from '@/api/getData'
+import { mapState, mapActions } from 'vuex'
 export default {
   data () {
     return {
@@ -46,25 +47,35 @@ export default {
   },
   mounted () {
     this.showLogin = true
+    // if (!this.adminInfo.id) {
+    //   console.log('adminfoid', this.adminInfo.id)
+    //   debugger
+    //   this.getAdminInfoData()
+    // }
   },
   computed: {
-
+    ...mapState(['adminInfo'])
+  },
+  watch: {
+    adminInfo: (newValue) => {
+      console.log('thislogin', newValue)
+    }
   },
   methods: {
+    // ...mapActions(['getAdminInfoData']),
     async submitForm (formName) {
-      // 校验 $refs组件的实例
+      // 校验 ref组件的实例
       this.$refs[formName].validate(
         async (valid) => {
           if (valid) {
-            console.log(' valid:', valid)
             const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
-            console.log(' result:', result)
             if (result.status === 1) {
               this.$message({
                 type: 'success',
                 message: 'login successful'
               })
               // 转向管理页面
+              this.$store.dispatch('getAdminInfoData')
               this.$router.push('manager')
             } else {
               this.$message({

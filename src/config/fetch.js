@@ -1,8 +1,8 @@
-import { baseUrl } from './env'
+import {
+  baseUrl
+} from './env'
 
 export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
-  debugger
-  console.log(url, data, type, method)
   type = type.toUpperCase()
   url = baseUrl + url
 
