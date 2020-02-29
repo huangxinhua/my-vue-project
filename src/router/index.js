@@ -27,6 +27,11 @@ export default new Router({
       component: Login
     },
     {
+      path: '/slot',
+      name: 'slot',
+      component: () => import('../components/study/slot/Myslot.vue')
+    },
+    {
       // 懒加载方式
       path: '/manager',
       name: 'manager',
