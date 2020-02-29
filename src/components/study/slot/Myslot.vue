@@ -30,8 +30,8 @@
         <div :style="{color:scope.age > 18 ? 'green' : 'red'}">
           {{scope.name}}---{{scope.age}}
         </div>
-      </template>-->
-    </MyTable>
+      </template>
+    </MyTable>-->
 
   </div>
 </template>
