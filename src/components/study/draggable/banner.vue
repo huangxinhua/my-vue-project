@@ -4,6 +4,9 @@
       <div class="bannerSetting-content">
         <LayoutPanel class="layout-panel"
                      title="设置">
+          <div>
+
+          </div>
           <div class="tree-one-box"
                ref="dragTreeBox"
                v-show="bannerData.length>0">

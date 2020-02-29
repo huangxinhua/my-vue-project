@@ -1,8 +1,12 @@
 <template>
   <div class="fillcontain">
     <el-row style="height: 100%;">
-      <el-col :span="4" style="min-height: 100%; background-color: #324057;">
-        <el-menu default-active="defaultActive" style="min-height:100%" theme="dark" router>
+      <el-col :span="4"
+              style="min-height: 100%; background-color: #324057;">
+        <el-menu default-active="defaultActive"
+                 style="min-height:100%"
+                 theme="dark"
+                 router>
           <el-menu-item index="manager"><i class="el-icon-menu"></i>首页</el-menu-item>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-document"></i>数据管理</template>
@@ -20,9 +24,13 @@
             <!-- <el-menu-item index="newMember">用户数据</el-menu-item> -->
           </el-submenu>
           <el-submenu index="5">
-            <template slot="title"><i class="el-icon-edit"></i>编辑</template>
-            <!-- <el-menu-item index="uploadImg">上传图片</el-menu-item> -->
-            <!--    <el-menu-item index="vueEdit">文本编辑</el-menu-item> -->
+            <template slot="title"><i class="el-icon-edit"></i>学习菜单</template>
+            <el-menu-item index="slot">vue插槽</el-menu-item>
+            <el-menu-item index="nest">嵌套</el-menu-item>
+            <el-menu-item index="draggable">可拖拽表格</el-menu-item>
+            <el-menu-item index="mockDataUse">mock数据使用</el-menu-item>
+            <el-menu-item index="study">study 路由</el-menu-item>
+            <el-menu-item index="minxinsTest">minxins</el-menu-item>
           </el-submenu>
           <el-submenu index="6">
             <template slot="title"><i class="el-icon-setting"></i>设置</template>
@@ -35,7 +43,8 @@
           </el-submenu>
         </el-menu>
       </el-col>
-      <el-col :span="20" style="height:100%;overflow:auto">
+      <el-col :span="20"
+              style="height:100%;overflow:auto">
         <keep-alive>
           <router-view></router-view>
         </keep-alive>

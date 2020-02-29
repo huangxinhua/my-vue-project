@@ -2,9 +2,11 @@
   <div class="header_container">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/manager' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item v-for="(item, index) in $route.meta" :key="index">{{item}}</el-breadcrumb-item>
+      <el-breadcrumb-item v-for="(item, index) in $route.meta"
+                          :key="index">{{item}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-dropdown @command="handleCommand" menu-align='start'>
+    <el-dropdown @command="handleCommand"
+                 menu-align='start'>
       <i class="el-icon-user-solid"></i>
       <!-- <img :src="baseImgPath" class="avator"> -->
       <el-dropdown-menu slot="dropdown">
@@ -48,7 +50,7 @@ export default {
       }
     },
     changeLaguages () {
-      console.log(this.$i18n.locale)
+      console.log(this.$i18n.locale, this.$route)
       this.$confirm('确定切换语言吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

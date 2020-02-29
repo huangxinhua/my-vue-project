@@ -30,9 +30,9 @@ Action 可以包含任意异步操作。
 */
 const actions = {
   getAdminInfoData(context, adminInfo) {
-    debugger
-    adminInfo.avatar = '11.jpg'
-    context.commit('saveAdminInfo', adminInfo)
+    /*  debugger
+     adminInfo.avatar = '11.jpg'
+     context.commit('saveAdminInfo', adminInfo) */
     // const res = getAdminInfo()
     // console.log('actions', res)
     // if (res.status === 1) {
