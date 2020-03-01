@@ -269,15 +269,21 @@ export default {
     },
     deleteBanner () {
       console.log(this.$refs.targetTree)
-      let array = this.$refs.targetTree.data
+      let ary = this.$refs.targetTree.data
+      debugger
       //删除选择的元素
-      if (array) {
-        array.forEach(a => {
-          debugger;
-          if (a.checked == true) {
-            array.splice(array[a], 1)
+      if (ary) {
+        for (var i = 0; i < ary.length; i++) {
+          if (ary[i].checked == true) {
+            ary.splice(i, 1);
           }
-        });
+        }
+        // array.forEach(a => {
+        //   debugger;
+        //   if (a.checked == true) {
+        //     array.splice(array[a], 1)
+        //   }
+        // });
       }
     },
     addBanner () {
