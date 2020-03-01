@@ -29,7 +29,8 @@ mock.onGet('/banner/getList').reply(200,
     icon_class: "icon_copy",
     checked: "false",
     link: "www.baidu.com",
-    isEditable: ""
+    isEditable: "",
+    popoverEditVisiable: false
   }, {
     id: 2,
     name: "切换租户",
@@ -37,7 +38,8 @@ mock.onGet('/banner/getList').reply(200,
     icon_class: "icon_copy",
     checked: "false",
     link: "www.baidu.com",
-    isEditable: ""
+    isEditable: "",
+    popoverEditVisiable: false
   }, {
     id: 3,
     name: "语言切换",
@@ -45,6 +47,7 @@ mock.onGet('/banner/getList').reply(200,
     icon_class: "icon_copy",
     checked: "false",
     link: "",
-    isEditable: ""
+    isEditable: "",
+    popoverEditVisiable: false
   }]
 );

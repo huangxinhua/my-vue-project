@@ -31,6 +31,7 @@
                 <div slot-scope="{data}">
                   <el-popover placement="right"
                               ref="popover"
+                              v-model="data.popoverEditVisiable"
                               trigger="click">
 
                     <el-form ref="viewform">
@@ -46,7 +47,7 @@
                       <el-form-item size="large">
                         <el-button type="primary"
                                    @click="onSubmit(data)">保存</el-button>
-                        <el-button @click="popoverEditVisiable=false">关闭</el-button>
+                        <el-button @click="data.popoverEditVisiable=false">关闭</el-button>
                       </el-form-item>
                     </el-form>
                     <div slot="reference"
@@ -120,7 +121,7 @@ export default {
       popoverVisible: false,
       maxTreeLevel: 1,
       showNextEdit: false,
-      popoverEditVisiable: false,
+      // popoverEditVisiable: false,
       bannerData: [],
       bannerForm: {
         // id: ,
@@ -276,8 +277,11 @@ export default {
         for (var i = 0; i < ary.length; i++) {
           if (ary[i].checked == true) {
             ary.splice(i, 1);
+            i--;
           }
         }
+
+
         // array.forEach(a => {
         //   debugger;
         //   if (a.checked == true) {
@@ -296,10 +300,10 @@ export default {
     onSubmit (data) {
       debugger
       console.log("save", data)
-      this.popoverEditVisiable = false;
+      data.popoverEditVisiable = false;
     },
     closeForm (data) {
-      this.popoverEditVisiable = false;
+      data.popoverEditVisiable = false;
       debugger
     }
   }
