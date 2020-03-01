@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
-    <h1 @click="getmockdata">{{ msg }}</h1>
-    <h2 @click="postRegisterForm">postregmock</h2>
+    <h1 @click="getmockdata">{{ msg }} 点击请求mock数据</h1>
+    <h2 @click="postRegisterForm">post mock</h2>
     <h3 @click="axiosMock">axiosmock data use</h3>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
   },
   methods: {
     getmockdata: function () {
-      axios.get("/api/myget").then(function (response) {
+      var instance = axios.create({ headers: { 'content-type': 'application/x-www-form-urlencoded' } });
+      instance.get("/api/myget").then(function (response) {
         // handle success
         console.log(response.data);
       }).catch(function (error) {
@@ -35,7 +36,8 @@ export default {
         });
     },
     postRegisterForm: () => {
-      axios.post("/api/register", { "huawei": "in company" }).then(
+      var instance = axios.create({ headers: { 'content-type': 'application/x-www-form-urlencoded' } });
+      instance.post("/api/register", { "huawei": "in company" }).then(
         (response) => {
           console.log(response.data);
         }

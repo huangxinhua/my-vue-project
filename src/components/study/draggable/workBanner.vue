@@ -1,23 +1,12 @@
 <template>
-  <div id="bannerSetting">
-    <div class="bannerSetting">
-      <div class="bannerSetting-content">
+  <div id="customMenu">
+    <div class="customMenu">
+      <div class="custom-menu-content">
         <LayoutPanel class="layout-panel"
                      title="设置">
-          <div>
-            <el-button type="primary"
-                       icon="el-icon-plus"
-                       circle
-                       @click="addBanner;"
-                       v-popover:popover2></el-button>
-            <el-button type="danger"
-                       icon="el-icon-delete"
-                       circle
-                       @click="deleteBanner"></el-button>
-          </div>
           <div class="tree-one-box"
                ref="dragTreeBox"
-               v-show="bannerData.length>0">
+               v-show="bannerData.length > 0">
             <div class="tree-one"
                  ref="dragTree">
               <Tree :data="bannerData"
@@ -28,35 +17,47 @@
                     :options="{handle:'icon_edit',animation:100}"
                     @drag="onDrag"
                     @drop="onDrop">
-                <div slot-scope="{data}">
-                  <el-popover placement="right"
-                              ref="popover"
-                              trigger="click">
-
-                    <el-form ref="viewform">
-                      <el-form-item label="图标">
-                        <el-input v-model="data.icon_class"></el-input>
-                      </el-form-item>
-                      <el-form-item label="名称">
-                        <el-input v-model="data.name"></el-input>
-                      </el-form-item>
-                      <el-form-item label="跳转连接">
-                        <el-input v-model="data.link"></el-input>
-                      </el-form-item>
-                      <el-form-item size="large">
-                        <el-button type="primary"
-                                   @click="onSubmit(data)">保存</el-button>
-                        <el-button @click="popoverEditVisiable=false">关闭</el-button>
-                      </el-form-item>
-                    </el-form>
+                <div slot-scope="{data}"
+                     @click="editBanner(data)">
+                  <el-popover trigger="click"
+                              placement="right">
+                    <!-- <el-table :data="bannerData">
+                      <el-table-column width="150" property="text" label="text"></el-table-column>
+                      <el-table-column width="100" property="icon_class" label="text"></el-table-column>
+                      <el-table-column width="300" property="checked" label="地址"></el-table-column>
+                    </el-table>-->
+                    <form-panel layoutType="horizontal"
+                                v-model="data"
+                                ref="form">
+                      <a-row type="flex"
+                             align="left">
+                        <a-col>
+                          <text-input ref="input"
+                                      name="text"
+                                      label="菜单名称"
+                                      tooltip="input1-tooltip"
+                                      :required="false"
+                                      placeholder="input"
+                                      :avoidSpecialChars="true"
+                                      :whenHiddenSkipCheck="true"></text-input>
+                        </a-col>
+                      </a-row>
+                      <a-row>
+                        <a-col :span="12">
+                          <!-- <a-button text="确认" @click="handleClick(data)" :disabled="data.isEditAbble"></a-button> -->
+                          <el-button type="text"
+                                     @click="handleClick(data)"
+                                     :disabled="data.isEditAbble">确认</el-button>
+                        </a-col>
+                      </a-row>
+                    </form-panel>
                     <div slot="reference"
                          class="name-wrapper">
-                      <div :class="['tree-content',{'tree-drop-not':!data.isDragPlaceHolder&&dragging&&!data.droppable}]">
-                        <el-checkbox label=""
-                                     v-model="data.checked"></el-checkbox>
+                      <div :class="['tree-content', {'tree-drop-not': !data.isDragPlaceHolder && dragging && !data.droppable}]">
+                        <el-checkbox v-model="data.checked"></el-checkbox>
                         <span :class="data.icon_class"
                               style="margin-left:18px"></span>
-                        <span :class="['label-content','label-padding']">{{getDisplayName(data)}}</span>
+                        <span :class="['label-content', 'label-padding']">{{getDisplayName(data)}}</span>
                         <span class="icon_ide_edit"></span>
                       </div>
                     </div>
@@ -65,119 +66,115 @@
               </Tree>
             </div>
           </div>
-          <el-popover placement="right"
-                      trigger="click"
-                      ref="popover2"
-                      v-model="popoverVisible"
-                      class="popover-content">
-            <el-form ref="viewform"
-                     :model="bannerForm">
-              <el-form-item label="图标">
-                <el-input v-model="bannerForm.icon"></el-input>
-              </el-form-item>
-              <el-form-item label="名称">
-                <el-input v-model="bannerForm.name"></el-input>
-              </el-form-item>
-              <el-form-item label="跳转连接">
-                <el-input v-model="bannerForm.link"></el-input>
-              </el-form-item>
-              <el-form-item size="large">
-                <el-button type="primary"
-                           @click="addBanner">保存</el-button>
-                <el-button @click="popoverVisible = false">关闭</el-button>
-              </el-form-item>
-            </el-form>
-          </el-popover>
           <div class="exit">
-            <el-checkbox disabled></el-checkbox>
+            <el-checkbox></el-checkbox>
             <span class="icon_logout"
                   style="margin-left:18px"></span>
-            <span style="margin-left:15px;">退出登录</span>
+            <span style="margin-left: 15px;">退出登录</span>
           </div>
         </LayoutPanel>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import _ from "lodash";
 import { DraggableTree } from "vue-draggable-nested-tree";
-import LayoutPanel from "./layoutPanel";
-import axios from 'axios';
-import mockAxios from "../../../mock/axios-mock-adapter";
+import LayoutPanel from "./components/LayoutPanel";
+import { Checkbox, Table, TableColumn, Button, Popover } from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+import FormPanel from "@adc/adc-ui/lib/form-panel";
+import ACol from "@adc/adc-ui/lib/col";
+import ARow from "@adc/adc-ui/lib/row";
+import TextInput from "@adc/adc-ui/lib/text-input";
+import AButton from "@adc/adc-ui/lib/button";
+import Vue from "vue";
+Vue.use(Button);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Popover);
 export default {
   name: "banner",
   components: {
+    LayoutPanel,
     Tree: DraggableTree,
-    LayoutPanel
+    Checkbox,
+    FormPanel,
+    ACol,
+    ARow,
+    TextInput,
+    AButton
   },
   data () {
     return {
+      popoverVisible: false,
       isShowRuler: true,
       isShowConfirmDialog: false,
       isShowInfo: false,
       dragging: false,
-      popoverVisible: false,
       maxTreeLevel: 1,
-      showNextEdit: false,
-      popoverEditVisiable: false,
-      bannerData: [],
-      bannerForm: {
-        // id: ,
-        name: null,
-        sort: null,
-        icon_class: null,
-        checked: null,
-        link: null,
-        isEditable: null
-      }
-    }
+      showNodeEdit: false,
+      bannerData: [
+        {
+          text: "个人设置",
+          sort: "1",
+          icon_class: "icon_copy",
+          checked: "true",
+          isEditAbble: true
+        },
+        {
+          text: "切换租户",
+          sort: "2",
+          icon_class: "icon_copy",
+          checked: "true",
+          isEditAbble: true
+        },
+        {
+          text: "语言切换",
+          sort: "3",
+          icon_class: "icon_copy",
+          checked: "true",
+          isEditAbble: false
+        }
+      ]
+    };
   },
-  computed: {
-
-  },
+  computed: {},
   mounted () {
-
+    // this.init();
   },
   created () {
-    this.initData();
+    document.title = this.$t("title");
   },
   methods: {
-    async initData () {
-      const result = await axios.get('/banner/getList').then(function (response) {
-        // handle success
-        console.log(response.data);
-        if (response && response.data) {
-          return response.data
-        }
-      });
-      this.bannerData = result;
-    },
     //拖拽操作
-    onDrag () {
+    onDrag (node) {
       this.dragging = true;
-      //根据拖拽位置更新动画
+      // 根据拖拽位置更新动画
       this.checkScrollBarr(node);
-      //控制菜单级数
-      let nodeLevels = 1
-      this.depthFirstSearch(node, chirdNode => {
-        if (chirdNode._vm.level > nodeLevels) {
-          nodeLevels = chirdNode._vm.level
+      // 控制菜单级数
+      let nodeLevels = 1;
+      this.depthFirstSearch(node, childNode => {
+        if (childNode._vm.level > nodeLevels) {
+          nodeLevels = childNode._vm.level;
         }
       });
       nodeLevels = nodeLevels - node._vm.level + 1;
       const childNodeMaxLevel = this.maxTreeLevel - nodeLevels;
       this.depthFirstSearch(this.bannerData, childNode => {
         if (childNode !== node) {
-          const droppable = !childNode.page &&
-            childNode._vm && childNode._vm.level <= childNodeMaxLevel;
-          this.$set(chirdNode, "droppable", droppable);
+          const droppable =
+            !childNode.page &&
+            childNode._vm &&
+            childNode._vm.level <= childNodeMaxLevel;
+          this.$set(childNode, "droppable", droppable);
         }
-      })
+      });
     },
-    depthFirstSearch (obj, handler, childrenKey = 'children', reverse) {
+    depthFirstSearch (obj, handler, childrenKey = "children", reverse) {
       const rootChildren = Array.isArray(obj) ? obj : [obj];
-      const stopException = () => { };
+      const StopException = () => { };
       const func = (children, parent) => {
         if (reverse) {
           children = children.slice();
@@ -186,8 +183,9 @@ export default {
         const len = children.length;
         for (let i = 0; i < len; i++) {
           const item = children[i];
-          const r = handler(item, i, parent)
+          const r = handler(item, i, parent);
           if (r === false) {
+            // stop
             throw new StopException();
           } else if (r === "skip children") {
             continue;
@@ -195,15 +193,15 @@ export default {
             break;
           }
           if (item[childrenKey] != null) {
-            func(item[childrenKey], item)
+            func(item[childrenKey], item);
           }
         }
       };
       try {
-        func(rootChildren)
+        func(rootChildren);
       } catch (e) {
         if (e instanceof StopException) {
-          //stop
+          // stop
         } else {
           throw e;
         }
@@ -215,17 +213,15 @@ export default {
     //拖拽时动画更新滚动条
     checkScrollBarr () {
       const critical = 88;
-      const root = this.$refs['dragTree'];
+      const root = this.$refs["dragTree"];
       const rootHeight = root.offsetHeight;
       function check () {
         const ele = document.getElementsByClassName("dragging")[0];
-        if (!ele) {
-          return;
-        }
+        if (!ele) return;
         const offset = ele.offsetTop;
-        const distanceButtom = rootHeight - offset;
+        const distanceBottom = rootHeight - offset;
         const distanceTop = offset;
-        if (distanceButtom < critical) {
+        if (distanceBottom < critical) {
           root.scrollTop += 5;
         } else if (distanceTop < critical) {
           root.scrollTop -= 5;
@@ -234,10 +230,10 @@ export default {
           requestAnimationFrame(check.bind(this));
         }
       }
-      //浏览器在下次重绘之前指定回调函数更新动画
+      //浏览器在下次重绘之前调用指定的回调函数更新动画
       requestAnimationFrame(check.bind(this));
     },
-    //将树形结构产生的多余数据删除
+    // 将树形结构产生的多余数据删除
     getTreePureData (node) {
       const t = Object.assign({}, node);
       delete t._id;
@@ -247,65 +243,65 @@ export default {
       delete t.style;
       delete t.class;
       delete t.innerStyle;
+      delete t.innerClass;
       delete t.innerBackStyle;
       delete t.innerBackClass;
-      for (const key of Object.keys[t]) {
-        if (key[0] == '_') {
+      for (const key of Object.keys(t)) {
+        if (key[0] === "_") {
           delete t[key];
         }
+      }
+      if (node.children) {
+        t.children = node.children.slice();
+        t.children.forEach((v, k) => {
+          t.children[k] = this.getTreePureData(v);
+        });
       }
       return t;
     },
     editBanner (row) {
-      this.popoverVisible = true
-      console.log("edit", this.popoverVisible)
+      console.log("edit:", row);
+      this.popoverVisible = true;
+      console.log("edit:", this.popoverVisible);
     },
-    getDisplayName (data) {
-      return data.name;
-    },
-    addBanner () {
-      this.popoverVisible = true
-      console.log("addBanner")
-    },
-    deleteBanner () {
-      console.log(this.$refs.targetTree)
-      let array = this.$refs.targetTree.data
-      //删除选择的元素
-      if (array) {
-        array.forEach(a => {
-          debugger;
-          if (a.checked == true) {
-            array.splice(array[a], 1)
-          }
-        });
-      }
-    },
-    addBanner () {
-      debugger;
-      this.bannerForm.sort = this.bannerData.length + 1;
-      this.bannerData.push(this.bannerForm);
+    handleClick (data) {
+      console.log("formclick", data);
       this.popoverVisible = false;
-
     },
-    onSubmit (data) {
-      debugger
-      console.log("save", data)
-      this.popoverEditVisiable = false;
-    },
-    closeForm (data) {
-      this.popoverEditVisiable = false;
-      debugger
+    //拖拽后树形结构发生变化，重新生成新数据
+    // onTreeChange(node, targetTree) {
+    //     this.$nextTick(() =>
+    //         this.$store.commit(
+    //             "deepTreeToTargetNode",
+    //             this.getTreePureData(targetTree.rootData).children
+    //         )
+    //     );
+    //     this.$nextTick(() =>
+    //         this.$store.commit(
+    //             "deepTreeToOriginalNode",
+    //             this.getTreePureData(targetTree.rootData).children
+    //         )
+    //     );
+    // },
+    // onOriginalNodeOpenChange(node) {
+    //     this.$store.commit("setOriginalNodeOpenStatus", {
+    //         keyCode: node.keycode,
+    //         open: node.open
+    //     });
+    // },
+    getDisplayName (data) {
+      return data.text;
     }
   }
-}
+};
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 html,
 body {
   height: 100%;
 }
-#bannerSetting {
+#customMenu {
   padding: 20px;
   box-sizing: border-box;
   height: 100%;
@@ -320,7 +316,7 @@ body {
     border-top: 1px solid #e6eaf2;
     padding-top: 17px;
   }
-  .bannerSetting {
+  .customMenu {
     max-width: 1200px;
     margin: 0 auto;
     background: #fff;
@@ -329,14 +325,14 @@ body {
     border: 1px solid #e6eaf2;
     padding: 25px 40px;
   }
-  .bannerSetting-content {
+  .custom-menu-content {
     display: flex;
     align-items: center;
     margin-top: 10px;
     height: calc(100% - 120px);
     width: 320px;
   }
-  .bannerSetting-select {
+  .custom-menu-select {
     width: 36px;
     height: 24px;
     line-height: 24px;
@@ -525,3 +521,35 @@ body {
   }
 }
 </style>
+<i18n>
+  {
+    "en": {
+      "title": "Customized Menu",
+      "customMenu": {
+        "noCustomMenu": "The 'Customized Menu' must be added to the new menu list, otherwise the menu will not be edited later!",
+		"CustomMenuForbidParent": "The 'Customized Menu' must be leaf menu, can not have child!",
+        "menuListTitle": "Menu List",
+        "selectedMenuTitle": "Selected Menu",
+        "selectedPanelTips": "Add a menu from the menu list on the left",
+        "saveBtn": "Save",
+        "cancelBtn": "Cancel",
+        "saveSuccess": "Save successfully!",
+        "saveFail": "Save failed!"
+      }
+    },
+    "zh_CN": {
+      "title": "菜单管理",
+      "customMenu": {
+        "noCustomMenu": "必须添加'租户自定义菜单'到新的菜单列表中，否则后续将无法编辑菜单！",
+		"CustomMenuForbidParent": "'租户自定义菜单' 必须是叶子菜单，不能有子菜单!",
+        "menuListTitle": "菜单列表",
+        "selectedMenuTitle": "已选菜单",
+        "selectedPanelTips": "从左侧菜单列表添加菜单",
+        "saveBtn": "保存",
+        "cancelBtn": "取消",
+        "saveSuccess": "保存成功",
+        "saveFail": "保存失败"
+      }
+    }
+  }
+</i18n>

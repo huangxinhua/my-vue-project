@@ -25,8 +25,8 @@ Mock.mock("/api/register", 'post', {
   "password": "123456",
   "age": /\d{5,10}/,
   "birthday": Mock.Random.date()
-})
-
+});
+/* 
 Mock.mock("/admin/login", 'post', {
   "status": "1"
-})
+}) */

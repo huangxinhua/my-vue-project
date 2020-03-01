@@ -12,3 +12,39 @@ mock.onGet('/users').reply(200, {
     name: 'John Smith'
   }]
 });
+
+mock.onPost('/admin/login').reply(function (config) {
+  console.log("aaa")
+  // return axios.get('/bar');
+  return {
+    "status": "1"
+  }
+});
+
+mock.onGet('/banner/getList').reply(200,
+  [{
+    id: 1,
+    name: "个人设置",
+    sort: "1",
+    icon_class: "icon_copy",
+    checked: "false",
+    link: "www.baidu.com",
+    isEditable: ""
+  }, {
+    id: 2,
+    name: "切换租户",
+    sort: "2",
+    icon_class: "icon_copy",
+    checked: "false",
+    link: "www.baidu.com",
+    isEditable: ""
+  }, {
+    id: 3,
+    name: "语言切换",
+    sort: "3",
+    icon_class: "icon_copy",
+    checked: "false",
+    link: "",
+    isEditable: ""
+  }]
+);

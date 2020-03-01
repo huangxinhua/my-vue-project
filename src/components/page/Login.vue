@@ -33,7 +33,6 @@
 </template>
 <script>
 import { login } from '@/api/getData'
-import mock from '../../mock/mock'
 import axios from "axios";
 import { mapState, mapActions } from 'vuex'
 export default {
@@ -74,23 +73,12 @@ export default {
   methods: {
     // ...mapActions(['getAdminInfoData']),
     async submitForm (formName) {
-      await axios.get("/api/myget").then(function (response) {
-        // handle success
-        console.log(response.data);
-      }).catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-        .then(function () {
-          // always executed
-        });
       // 校验 ref组件的实例
       this.$refs[formName].validate(
         async (valid) => {
           if (valid) {
             var reqData = { user_name: this.loginForm.username, password: this.loginForm.password };
-            // const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
-            const result = await axios.post('/admin/login', reqData);
+            const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
             if (result.status === 1) {
               this.$message({
                 type: 'success',
