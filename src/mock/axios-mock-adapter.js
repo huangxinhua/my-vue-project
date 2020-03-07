@@ -1,9 +1,9 @@
-var axios = require('axios');
-var MockAdapter = require('axios-mock-adapter');
+// var axios = require('axios');
+// var MockAdapter = require('axios-mock-adapter');
 
-// 设置模拟调试器实例
-var mock = new MockAdapter(axios);
-
+// // 设置模拟调试器实例
+// var mock = new MockAdapter(axios);
+import mock from './index.js'
 // 模拟接收'/users'下的Get请求
 // reply方法的参数格式（status,data,headers)
 mock.onGet('/users').reply(200, {
@@ -14,7 +14,7 @@ mock.onGet('/users').reply(200, {
 });
 
 mock.onPost('/admin/login').reply(function (config) {
-  console.log("aaa")
+  // console.log("aaa")
   // return axios.get('/bar');
   return {
     "status": "1"

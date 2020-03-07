@@ -8,7 +8,7 @@
 
 <script>
 import { mixinsTest, mixinsTest2 } from '@/components/study/mixins/test.js'
-import mock from '../mock/mock';
+// import mock from '../mock/mock';
 import axiosMock from "../mock/axios-mock-adapter";
 import axios from 'axios'
 export default {
@@ -24,7 +24,7 @@ export default {
   methods: {
     getmockdata: function () {
       var instance = axios.create({ headers: { 'content-type': 'application/x-www-form-urlencoded' } });
-      instance.get("/api/myget").then(function (response) {
+      instance.get("/admin/login").then(function (response) {
         // handle success
         console.log(response.data);
       }).catch(function (error) {
@@ -37,7 +37,7 @@ export default {
     },
     postRegisterForm: () => {
       var instance = axios.create({ headers: { 'content-type': 'application/x-www-form-urlencoded' } });
-      instance.post("/api/register", { "huawei": "in company" }).then(
+      instance.post("/admin/login", { "huawei": "in company" }).then(
         (response) => {
           console.log(response.data);
         }

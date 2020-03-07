@@ -1,62 +1,145 @@
 <template>
-  <div id="customMenu">
+  <div id="customMenu" @click="clickCustomMenu">
+    <div>
+      <banner-toolbar ref="bannerToolbar"></banner-toolbar>
+    </div>
     <div class="customMenu">
       <div class="custom-menu-content">
-        <LayoutPanel class="layout-panel"
-                     title="设置">
-          <div class="tree-one-box"
-               ref="dragTreeBox"
-               v-show="bannerData.length > 0">
-            <div class="tree-one"
-                 ref="dragTree">
-              <Tree :data="bannerData"
-                    ref="targetTree"
-                    :space="6"
-                    openedClass="tree-child"
-                    :draggable="true"
-                    :options="{handle:'icon_edit',animation:100}"
-                    @drag="onDrag"
-                    @drop="onDrop">
-                <div slot-scope="{data}"
-                     @click="editBanner(data)">
-                  <el-popover trigger="click"
-                              placement="right">
-                    <!-- <el-table :data="bannerData">
-                      <el-table-column width="150" property="text" label="text"></el-table-column>
-                      <el-table-column width="100" property="icon_class" label="text"></el-table-column>
-                      <el-table-column width="300" property="checked" label="地址"></el-table-column>
-                    </el-table>-->
-                    <form-panel layoutType="horizontal"
-                                v-model="data"
-                                ref="form">
-                      <a-row type="flex"
-                             align="left">
-                        <a-col>
-                          <text-input ref="input"
-                                      name="text"
-                                      label="菜单名称"
-                                      tooltip="input1-tooltip"
-                                      :required="false"
-                                      placeholder="input"
-                                      :avoidSpecialChars="true"
-                                      :whenHiddenSkipCheck="true"></text-input>
+        <LayoutPanel class="layout-panel" title="设置">
+          <div>
+            <a-button
+              :text="$t('banner.create')"
+              iconClass="el-icon-add-location"
+              @click="addBanner"
+            ></a-button>
+            <a-button :text="$t('banner.delete')" iconClass="icon_delete" @click="deleteBanner"></a-button>
+          </div>
+          <div class="tree-one-box" ref="dragTreeBox" v-show="bannerData.length > 0">
+            <div class="tree-one" ref="dragTree">
+              <Tree
+                :data="bannerData"
+                ref="targetTree"
+                :space="6"
+                openedClass="tree-child"
+                :draggable="true"
+                :options="{handle:'icon_edit',animation:100}"
+                @drag="onDrag"
+                @drop="onDrop"
+                @change="onTreeChange"
+              >
+                <div slot-scope="{data}" @click="editBanner(data)">
+                  <el-popover
+                    trigger="click"
+                    placement="right"
+                    ref="popover"
+                    popper-class="banner-add-tool-pop"
+                    v-model="data.popoverEditVisiable"
+                  >
+                    <form-panel layoutType="horizontal" ref="form" class="popForm">
+                      <a-row type="flex" align="left">
+                        <a-col :span="5" style="line-height: 28px;">
+                          <span>菜单图标</span>
+                        </a-col>
+                        <a-col :span="19">
+                          <img :src="data.icon" width="30px" height="30px" />
+                          <span @click="changeIcon" style="color: #6C92FA;">更改</span>
+                        </a-col>
+                      </a-row>
+                      <a-row type="flex" align="left">
+                        <a-col :span="5">菜单名称</a-col>
+                        <a-col :span="19">
+                          <text-input
+                            ref="input"
+                            v-model="data.name"
+                            name="name"
+                            :readOnly="data.isReadonly"
+                            tooltip="input1-tooltip"
+                            :required="true"
+                            placeholder="input"
+                            :avoidSpecialChars="true"
+                            :whenHiddenSkipCheck="true"
+                          ></text-input>
                         </a-col>
                       </a-row>
                       <a-row>
+                        <a-col :span="5">链接方式</a-col>
+                        <a-col :span="19">
+                          <el-radio
+                            :disabled="data.isReadonly"
+                            v-model="data.category"
+                            label="url"
+                          >跳转链接</el-radio>
+                          <el-radio
+                            :disabled="data.isReadonly"
+                            v-model="data.category"
+                            label="service"
+                          >服务</el-radio>
+                        </a-col>
+                      </a-row>
+                      <a-row type="flex" align="left" v-if="data.category=='url'">
+                        <a-col :span="5">
+                          <span>跳转链接</span>
+                        </a-col>
+                        <a-col :span="19">
+                          <text-input
+                            ref="input"
+                            type="textarea"
+                            v-model="data.link"
+                            :readOnly="data.isReadonly"
+                            :required="false"
+                            placeholder="please input link"
+                          ></text-input>
+                        </a-col>
+                      </a-row>
+                      <a-row type="flex" align="left" v-if="data.category=='service'">
+                        <a-col :span="5">
+                          <span>服务</span>
+                        </a-col>
+                        <a-col :span="19">
+                          <text-input
+                            ref="input"
+                            type="textarea"
+                            v-model="data.service"
+                            :readOnly="data.isReadonly"
+                            :required="false"
+                            placeholder="please input link"
+                          ></text-input>
+                        </a-col>
+                      </a-row>
+                      <a-row type="flex" align="right">
+                        <a-col :span="12"></a-col>
                         <a-col :span="12">
-                          <!-- <a-button text="确认" @click="handleClick(data)" :disabled="data.isEditAbble"></a-button> -->
-                          <el-button type="text"
-                                     @click="handleClick(data)"
-                                     :disabled="data.isEditAbble">确认</el-button>
+                          <div>
+                            <el-button
+                              class="disable_button"
+                              type="primary"
+                              plain
+                              :disabled="data.isReadonly"
+                              @click="onSubmit(data)"
+                            >确认</el-button>
+                            <el-button
+                              type="primary"
+                              plain
+                              @click="data.popoverEditVisiable=false"
+                            >关闭</el-button>
+                          </div>
                         </a-col>
                       </a-row>
                     </form-panel>
-                    <div slot="reference"
-                         class="name-wrapper">
-                      <div :class="['tree-content', {'tree-drop-not': !data.isDragPlaceHolder && dragging && !data.droppable}]">
+                    <div class="pop_wapper" v-if="isShowPop">
+                      <change-icon
+                        @closePop="closePop"
+                        @selectedLogo="($event)=>{selectedLogo($event,data)}"
+                      ></change-icon>
+                    </div>
+                    <div slot="reference" class="name-wrapper">
+                      <div
+                        :class="['tree-content', {'tree-drop-not': !data.isDragPlaceHolder && dragging && !data.droppable}]"
+                      >
                         <el-checkbox v-model="data.checked"></el-checkbox>
-                        <span :class="data.icon_class"
-                              style="margin-left:18px"></span>
+                        <span :class="data.icon_class" style="margin-left:18px">
+                          <img :src="data.icon" class="bannerImage" />
+                        </span>
                         <span :class="['label-content', 'label-padding']">{{getDisplayName(data)}}</span>
                         <span class="icon_ide_edit"></span>
                       </div>
@@ -68,9 +151,13 @@
           </div>
           <div class="exit">
             <el-checkbox></el-checkbox>
-            <span class="icon_logout"
-                  style="margin-left:18px"></span>
-            <span style="margin-left: 15px;">退出登录</span>
+            <span style="margin-left:18px;">
+              <img
+                style="width:24px;height:24px"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH4SURBVFhH7ZZPSwJBGIf7gBIEQuDRkyCIJ8F7X8FTx0DyGEgehMKDhF4MwYsihF4EAxEhEIS3HmaG0WVmZ7SCCB8Ymn3//Obnxr67F/JHOBtJcjaS5GwkyT8xMpmo9QPEG1mtRFotkfVaXfP38lKt/Rg11B5JnJFuV+T6WiSTEanVVGyxUNcs9kCOa2rpOYKwkYcHe2A2K9LrqbjLCDlqTJzeSNKNvLxY0VLJHgguI8CeWpPr93UiHb+RzUYkl1NixaLIx4dOaHxGgFpjBg20AviN3N0poasrkflcB/dIMwL00EserQB+I+Zu3N7qQILl0hph74Je8mgFcBsZj+0h7H08P6vlYzq1OuxTcBt5fFTNPAHfxTxF7bYOuHEbub9Xzfm8DnwDNNCq13XAjdsITT9tpNHQATduI09Pqpnxvd3q4AnQa56cTkcH3biNzGaqmTUY6OAJ0Gt00EzBbQQKBSVwc6MDJ0AvGgzEAH4jvEXNr4kc0we8vtr+ZlMH/fiN7HaHY9o1XX1QawYiGmgF8BuBtzc7BxCOebVz98wnA71oRJBuBEajw1d7taqm6fu7LviCDyFi5EwdPfRGEjYC/Kpy2R4SWtRG3glDnBHg/8x8qVTch7PIBeaFj3gj+/B9wYzg/cEaDqO+OdI4zcgvcDaS5I8YEfkEDlNBoGE+7ZgAAAAASUVORK5CYII="
+              />
+            </span>
+            <span style="margin-left: 15px;font-size:17px">退出登录</span>
           </div>
         </LayoutPanel>
       </div>
@@ -82,18 +169,27 @@
 import _ from "lodash";
 import { DraggableTree } from "vue-draggable-nested-tree";
 import LayoutPanel from "./components/LayoutPanel";
-import { Checkbox, Table, TableColumn, Button, Popover } from "element-ui";
+import { Checkbox, Table, TableColumn, Button, Popover, Radio } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import FormPanel from "@adc/adc-ui/lib/form-panel";
+import RadioGroup from "@adc/adc-ui/lib/radio-group";
+import RadioGroupOption from "@adc/adc-ui/lib/radio-group-option";
 import ACol from "@adc/adc-ui/lib/col";
 import ARow from "@adc/adc-ui/lib/row";
 import TextInput from "@adc/adc-ui/lib/text-input";
 import AButton from "@adc/adc-ui/lib/button";
+import axios from 'axios';
+import FileInput from "@adc/adc-ui/lib/file-input";
+import { Nf } from "@adc/adc-ui/lib/utils/adapter";
+import bannerToolbar from "../../runtime/header/bannerToolbar";
+import changeIcon from './components/changeLogo'
+import axiosMock from '../../runtime/header/bannerAxiosMock';
 import Vue from "vue";
 Vue.use(Button);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(Popover);
+Vue.use(Radio);
 export default {
   name: "banner",
   components: {
@@ -103,8 +199,13 @@ export default {
     FormPanel,
     ACol,
     ARow,
+    RadioGroup,
+    RadioGroupOption,
     TextInput,
-    AButton
+    "a-button": AButton,
+    FileInput,
+    bannerToolbar,
+    changeIcon
   },
   data () {
     return {
@@ -115,29 +216,8 @@ export default {
       dragging: false,
       maxTreeLevel: 1,
       showNodeEdit: false,
-      bannerData: [
-        {
-          text: "个人设置",
-          sort: "1",
-          icon_class: "icon_copy",
-          checked: "true",
-          isEditAbble: true
-        },
-        {
-          text: "切换租户",
-          sort: "2",
-          icon_class: "icon_copy",
-          checked: "true",
-          isEditAbble: true
-        },
-        {
-          text: "语言切换",
-          sort: "3",
-          icon_class: "icon_copy",
-          checked: "true",
-          isEditAbble: false
-        }
-      ]
+      bannerData: [],
+      isShowPop: false
     };
   },
   computed: {},
@@ -146,8 +226,34 @@ export default {
   },
   created () {
     document.title = this.$t("title");
+    this.initData();
   },
   methods: {
+    async initData () {
+      const result = await axios.get('/banner/getList').then(function (response) {
+        // handle success
+        if (response && response.data) {
+          return response.data
+        }
+      });
+      if (result && (result instanceof Array)) {
+        result.forEach(item => {
+          //editable=1可编辑 0不可编辑
+          if (item.editable == 0 || item.editable === "0") {
+            item.isReadonly = true;
+          } else {
+            item.isReadonly = false;
+          }
+          item.popoverEditVisiable = false;
+          item.checked = false;
+        })
+        this.bannerData = result;
+      }
+      debugger
+    },
+    clickCustomMenu: function () {
+      this.$refs.bannerToolbar.isMenuShow = false;
+    },
     //拖拽操作
     onDrag (node) {
       this.dragging = true;
@@ -260,29 +366,23 @@ export default {
       return t;
     },
     editBanner (row) {
-      console.log("edit:", row);
       this.popoverVisible = true;
-      console.log("edit:", this.popoverVisible);
-    },
-    handleClick (data) {
-      console.log("formclick", data);
-      this.popoverVisible = false;
     },
     //拖拽后树形结构发生变化，重新生成新数据
-    // onTreeChange(node, targetTree) {
-    //     this.$nextTick(() =>
-    //         this.$store.commit(
-    //             "deepTreeToTargetNode",
-    //             this.getTreePureData(targetTree.rootData).children
-    //         )
-    //     );
-    //     this.$nextTick(() =>
-    //         this.$store.commit(
-    //             "deepTreeToOriginalNode",
-    //             this.getTreePureData(targetTree.rootData).children
-    //         )
-    //     );
-    // },
+    onTreeChange (node, targetTree) {
+      var ary = this.bannerData;
+      var resultSort = []
+      for (var i = 0; i < ary.length; i++) {
+        ary[i].sort = (i + 1).toString();
+        resultSort.push({ id: ary[i].id, sort: ary[i].sort })
+      }
+      //把顺序重新入库
+      axios({
+        method: 'post',
+        url: '/banner/sortUpdate',
+        data: resultSort
+      });
+    },
     // onOriginalNodeOpenChange(node) {
     //     this.$store.commit("setOriginalNodeOpenStatus", {
     //         keyCode: node.keycode,
@@ -290,7 +390,95 @@ export default {
     //     });
     // },
     getDisplayName (data) {
-      return data.text;
+      return data.name;
+    },
+    deleteBanner () {
+      let ary = this.$refs.targetTree.data
+      Nf.promptConfirm({
+        message: "确定要删除吗?",
+        closeBtn: true,
+        handler: btn => {
+          if (btn === "ok") {
+            //删除选择的元素
+            if (ary) {
+              let submitDataId = []
+              for (var i = 0; i < ary.length; i++) {
+                if (ary[i].checked == true) {
+                  if (ary[i].id) {
+                    submitDataId.push(ary[i]);
+                  }
+                  ary.splice(i, 1);
+                  i--;
+                }
+              }
+              axios({
+                method: 'post',
+                url: '/banner/delete',
+                data: submitDataId
+              });
+            }
+          }
+        },
+      });
+    },
+    addBanner () {
+      let emptyForm = { "sort": this.bannerData.length + 1, category: "url", checked: false, isReadonly: false, popoverEditVisiable: true }
+      this.bannerData.push(emptyForm);
+    },
+    onSubmit (data) {
+      // this.bannerData.forEach(element => {
+      //   if (element.name === data.name && data.id != element.id) {
+      //     Nf.promptError({
+      //       message: "有相同的菜单名称，请重新输入",
+      //       handler: function () { },
+      //       height: 180,
+      //       width: 350
+      //     });
+      //   }
+      // });
+      var submitData = {};
+      if (data.id) {//update
+        submitData.id = data.id;
+      }
+      submitData.name = data.name;
+      submitData.sort = data.sort;
+      submitData.link = data.link;
+      submitData.isReadonly = data.isReadonly;
+      axios({
+        method: 'post',
+        url: '/banner/createOrupdate',
+        data: submitData
+      });
+      data.popoverEditVisiable = false;
+    },
+    closeForm (data) {
+      data.popoverEditVisiable = false;
+    },
+    closePop (value) {
+      this.isShowPop = value;
+    },
+    selectedLogo (value, itemData) {
+      debugger
+      itemData.icon = value;
+      this.closePop(false)
+    },
+    changeIcon () {
+      /* Nf.promptWindow({
+        message: "/change-icon/index.html",
+        zIndex: 6000,
+        appendToBody: true,
+        title: "工程配置",
+        height: 481,
+        callback:function(){ console.log("window")},
+        width: 477
+      });*/
+      setTimeout(function () {
+        let mask = document.getElementsByClassName("prompt-wrapper");
+        mask[0].addEventListener("click", function (e) {
+          e.stopPropagation();
+        });
+      }, 1000);
+      this.isShowPop = true
     }
   }
 };
@@ -300,6 +488,10 @@ export default {
 html,
 body {
   height: 100%;
+}
+.bannerImage {
+  height: 24px;
+  width: 24px;
 }
 #customMenu {
   padding: 20px;
@@ -386,6 +578,7 @@ body {
     }
     .label-content {
       display: inline-block;
+      font-size: 17px;
       max-width: calc(100% - 60px);
       text-overflow: ellipsis;
       overflow: hidden;
@@ -509,6 +702,10 @@ body {
   .draggable-placeholder {
     margin: 8px 0;
   }
+  .disable_button {
+    border: 1px solid;
+    background: #fff;
+  }
   .draggable-placeholder-inner {
     border-bottom: 1px solid #db061f;
     box-sizing: border-box;
@@ -520,12 +717,37 @@ body {
     }
   }
 }
+.pop_wapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 6000;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popForm {
+  font-family: "Arial Normal", "Arial";
+  font-weight: 400;
+  font-style: normal;
+  font-size: 16px;
+}
+</style>
+<style >
+.banner-add-tool-pop {
+  z-index: 200 !important;
+}
 </style>
 <i18n>
   {
     "en": {
-      "title": "Customized Menu",
-      "customMenu": {
+      "title": "banner",
+      "banner": {
+        "create":"Create",
+        "delete":"Delete",
         "noCustomMenu": "The 'Customized Menu' must be added to the new menu list, otherwise the menu will not be edited later!",
 		"CustomMenuForbidParent": "The 'Customized Menu' must be leaf menu, can not have child!",
         "menuListTitle": "Menu List",
@@ -538,8 +760,10 @@ body {
       }
     },
     "zh_CN": {
-      "title": "菜单管理",
-      "customMenu": {
+      "title": "banner",
+      "banner": {
+        "create":"创建",
+        "delete":"删除",
         "noCustomMenu": "必须添加'租户自定义菜单'到新的菜单列表中，否则后续将无法编辑菜单！",
 		"CustomMenuForbidParent": "'租户自定义菜单' 必须是叶子菜单，不能有子菜单!",
         "menuListTitle": "菜单列表",
@@ -549,7 +773,13 @@ body {
         "cancelBtn": "取消",
         "saveSuccess": "保存成功",
         "saveFail": "保存失败"
+      },
+      "prompt":{
+        "button":{
+          "ok":"确认"
+        }
       }
     }
   }
+  
 </i18n>

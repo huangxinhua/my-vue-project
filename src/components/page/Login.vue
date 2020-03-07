@@ -1,27 +1,19 @@
 <template>
   <div class="login_page fillcontain">
-    <transition name="form-fade"
-                mode="in-out">
+    <transition name="form-fade" mode="in-out">
       <section class="form_contianer">
         <div class="manage_tip">
           <p>Backend Login System</p>
         </div>
-        <el-form :model="loginForm"
-                 :rules="rules1"
-                 ref="loginForm">
+        <el-form :model="loginForm" :rules="rules1" ref="loginForm">
           <el-form-item prop="username">
-            <el-input v-model="loginForm.username"
-                      placeholder="用户名"></el-input>
+            <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password"
-                      type="password"
-                      placeholder="密码"></el-input>
+            <el-input v-model="loginForm.password" type="password" placeholder="密码"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary"
-                       class="submit_btn"
-                       @click="submitForm('loginForm')">Login</el-button>
+            <el-button type="primary" class="submit_btn" @click="submitForm('loginForm')">Login</el-button>
           </el-form-item>
         </el-form>
         <p class="tip">温馨提示：</p>
@@ -34,6 +26,7 @@
 <script>
 import { login } from '@/api/getData'
 import axios from "axios";
+
 import { mapState, mapActions } from 'vuex'
 export default {
   data () {
@@ -74,11 +67,11 @@ export default {
     // ...mapActions(['getAdminInfoData']),
     async submitForm (formName) {
       // 校验 ref组件的实例
-      this.$refs[formName].validate(
+      this.$refs['loginForm'].validate(
         async (valid) => {
           if (valid) {
             var reqData = { user_name: this.loginForm.username, password: this.loginForm.password };
-            const result = await login({ user_name: this.loginForm.username, password: this.loginForm.password })
+            const result = await login(reqData)
             if (result.status === 1) {
               this.$message({
                 type: 'success',

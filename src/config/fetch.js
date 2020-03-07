@@ -1,7 +1,7 @@
 import {
   baseUrl
 } from './env'
-import mock from '../mock/mock'
+import '../mock/axios-mock-adapter'
 export default async (url = '', data = {}, type = 'GET', method = 'fetch') => {
   type = type.toUpperCase()
   url = baseUrl + url
