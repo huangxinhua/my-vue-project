@@ -26,5 +26,6 @@ npm run e2e
 # run all tests
 npm test
 ```
-
+url表达式
+var pattern = /^((\/|https|http|ftp|rtsp|mms)?:\/\/)[^\s]+ |^(\/\w)/,
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
