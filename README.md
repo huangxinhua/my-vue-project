@@ -1,6 +1,6 @@
 # my-project
 http://localhost:8080/#/manager
-> A Vue.js project
+> this A Vue.js project
 
 ## Build Setup
 
